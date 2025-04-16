@@ -1,39 +1,71 @@
-<!-- 
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/tools/pub/writing-package-pages). 
+# Selcom Dart Package
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/to/develop-packages). 
--->
+```dart_selcom``` is a Dart package for accessing Selcom APIs
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+## Motivation
 
-## Features
+As a Flutter developer, being competent in [Dart](https://dart.dev/) language, I wanted to integrate Selcom payment gateway into my backend server. However, I found that there were no existing Dart packages available for this purpose. To fill this gap, I created this package to provide a simple way to use Selcom APIs with backend servers that support Dart.
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+## Installation
 
-## Getting started
+Add `dart_selcom` to your `pubspec.yaml` file:
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
-
-## Usage
-
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
-
-```dart
-const like = 'sample';
+```yaml
+dependencies:
+  dart_selcom: latest_version
 ```
 
-## Additional information
+Run `dart pub get` to install the package, or, install it directly from the command line:
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+```yaml
+dart pub add dart_selcom
+```
+
+## Example: Create Order
+
+```dart
+// Initialize the Selcom client
+final selcomClient = SelcomClient(
+  baseUrl: 'SELCOM_BASE_URL',
+  apiKey: 'SELCOM_API_KEY',
+  apiSecret: 'SELCOM_API_SECRET',
+);
+
+// Example data. Replace with actual values.
+final data = {
+  'vendor': '{{vendor}}',
+  'order_id': '{{order_id}}',
+  'no_of_items': '{{no_of_items}}',
+  'buyer_email': '{{buyer_email}}',
+  'buyer_name': '{{buyer_name}}',
+  'buyer_phone': '{{buyer_phone}}',
+  'amount': '{{amount}}',
+  'currency': '{{currency}}',
+  'webhook': base64.encode(utf8.encode('{{webhook}}')),
+};
+
+try {
+  final path = '/checkout/create-order-minimal';
+
+  final res = await selcomClient.postFunc(path, data);
+  if (res.statusCode == 200) {
+    // Successful response
+    print('Order created: ${res.body}');
+  } else {
+    // Failed response
+    print('Failed to create order: ${res.body}');
+  }
+} catch (e) {
+  print('Failed to create order: ${e.toString()}');
+}
+```
+
+## Contributing
+
+Contributions are welcome! If you have suggestions for improvements or new features, please open an issue or submit a pull request.
+
+## License
+
+This project is licensed under the BSD 3-Clause License. See the [LICENSE](LICENSE) file for details.
+
